@@ -1,9 +1,9 @@
 """Views"""
 from django.core.exceptions import ValidationError
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.defaults import page_not_found
 
-from .models import Queue
+from .models import Queue, QueueMember
 from .forms import QueueCreationForm, QueueMemberForm
 
 
@@ -28,13 +28,14 @@ def queue(request, queue_name):
     if request.method == "POST":
         form = QueueMemberForm(data=request.POST)
         if form.is_valid():
-            queue.members += f',{form.member_name}'
-        return redirect(queue.get_url())
+            QueueMember(name=form.name, queue=queue).save()
+        return redirect(queue.url)
 
     # render queue page
     context = dict(
         queue=queue,
         form=QueueMemberForm(),
+        queueing=[m.name for m in QueueMember.objects.filter(queue=queue)],
     )
     return render(request, template_name="show_queue.html", context=context)
 
@@ -42,6 +43,6 @@ def queue(request, queue_name):
 def create_queue(request):
     context = dict(
         form=QueueCreationForm(),
-        existing_queue_names=[q.name for q in Queue.objects.all()]
+        existing_queue_names=[q.name for q in QueueMember.objects.all()]
     )
     return render(request, template_name="create_queue.html", context=context)
