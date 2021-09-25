@@ -41,6 +41,13 @@ def queue(request, queue_name):
 
 
 def create_queue(request):
+
+    if request.method == "POST":
+        form = QueueCreationForm(data=request.POST)
+        if form.is_valid():
+            queue = Queue(name=form.name, description=form.discription, max_members=form.max_members)
+            queue.save()
+            return redirect(queue.url)
     context = dict(
         form=QueueCreationForm(),
         existing_queue_names=[q.name for q in QueueMember.objects.all()]
