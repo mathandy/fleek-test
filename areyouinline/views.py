@@ -1,13 +1,10 @@
 """Views"""
-from django.conf import settings as st
-from django.core.validators import RegexValidator, MaxLengthValidator
 from django.core.exceptions import ValidationError
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render
 from django.views.defaults import page_not_found
-import markdown
 
 from .models import Queue
-from .forms import QueueCreationForm
+from .forms import QueueCreationForm, QueueMemberForm
 
 
 def home(request):
@@ -20,20 +17,31 @@ def queue(request, queue_name):
     try:
         _ = Queue.validate_name(queue_name)
     except ValidationError as e:
-        return page_not_found(request, message=e.message)
+        return page_not_found(request=request, exception=e.message)
 
     # find queue
     queue = Queue.objects.filter(name=queue_name.lower())
     if not queue:
-        return page_not_found(request, message="There is no queue name 'queue'")
+        return page_not_found(
+            request=request, exception=f"There is no queue named '{queue_name}'.")
 
+    if request.method == "POST":
+        form = QueueMemberForm(data=request.POST)
+        if form.is_valid():
+            queue.members += f',{form.member_name}'
+        return redirect(queue.get_url())
+
+    # render queue page
     context = dict(
         queue=queue,
+        form=QueueMemberForm(),
     )
     return render(request, template_name="show_queue.html", context=context)
 
 
 def create_queue(request):
-    context = dict(description=markdown.markdown(description))
-
+    context = dict(
+        form=QueueCreationForm(),
+        existing_queue_names=[q.name for q in Queue.objects.all()]
+    )
     return render(request, template_name="create_queue.html", context=context)

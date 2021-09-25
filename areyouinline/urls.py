@@ -15,15 +15,14 @@ Including another URLconf
 """
 # from django.conf import settings
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 from . import views
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home, 'home'),
+    path('', views.create_queue, 'create_queue'),
     path('queue/<str:queue_name>', views.queue, 'queue'),
-    path('create/', views.create_queue, 'create_queue'),
-
+    path('martor/', include('martor.urls')),
 ]

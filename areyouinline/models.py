@@ -27,8 +27,8 @@ class Queue(models.Model):
     name = models.CharField(null=False, unique=True, max_length=NAME_MAX_LENGTH)
     description = models.CharField(null=True, max_length=DESCRIPTION_MAX_LENGTH)
     creation_datetime = models.DateTimeField(auto_now_add=True)
-    max_members = models.PositiveIntegerField(null=False, default=25)
-    members = models.CharField(null=False, default='', max_length=MEMBER_NAME_MAX_LENGTH*1000)
+    max_members = models.PositiveIntegerField(null=False)
+    members = models.CharField(default='', max_length=MEMBER_NAME_MAX_LENGTH*1000)
 
     @classmethod
     def validate_name(cls, name):
@@ -39,3 +39,12 @@ class Queue(models.Model):
     def validate_member_name(cls, name):
         _ = cls._max_length_validator(name)
         _ = cls._allowed_chars_validator(name)
+
+
+class QueueMember(models.Model):
+    objects = models.Manager()
+
+    NAME_MAX_LENGTH = Queue.MEMBER_NAME_MAX_LENGTH
+
+    name = models.CharField(null=False, max_length=NAME_MAX_LENGTH)
+    queue = models.ForeignKey(Queue, on_delete='cascade')

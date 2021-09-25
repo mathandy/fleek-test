@@ -1,2 +1,2 @@
 django==3.2.7
-markdown==3.3.4
+martor==1.6.4
