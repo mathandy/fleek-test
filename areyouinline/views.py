@@ -41,16 +41,17 @@ def queue(request, queue_name):
 
 
 def create_queue(request):
-
+    form = QueueCreationForm(data=request.GET)
     if request.method == "POST":
-        from IPython import embed; embed()  ### DEBUG
+        name = request.POST.get('name', [''])[0]
+        description = request.POST.get('description', [''])[0]
         form = QueueCreationForm(data=request.POST)
         if form.is_valid():
             queue = Queue(name=form.name, description=form.discription, max_members=form.max_members)
             queue.save()
             return redirect(queue.url)
     context = dict(
-        form=QueueCreationForm(),
+        form=form,
         existing_queue_names=[q.name for q in QueueMember.objects.all()]
     )
     return render(request, template_name="create_queue.html", context=context)
