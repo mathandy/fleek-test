@@ -43,6 +43,7 @@ def queue(request, queue_name):
 def create_queue(request):
 
     if request.method == "POST":
+        from IPython import embed; embed()  ### DEBUG
         form = QueueCreationForm(data=request.POST)
         if form.is_valid():
             queue = Queue(name=form.name, description=form.discription, max_members=form.max_members)
