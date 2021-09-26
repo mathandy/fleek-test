@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -123,6 +123,10 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = Path(BASE_DIR) / 'export' / 'static'
 
+STATICFILES_DIRS = [
+    Path(BASE_DIR) / 'areyouinline' / 'static',
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -154,9 +158,9 @@ MARTOR_TOOLBAR_BUTTONS = [
 # To setup the martor editor with title label or not (default is False)
 MARTOR_ENABLE_LABEL = False
 
-# Imgur API Keys
-MARTOR_IMGUR_CLIENT_ID = 'your-client-id'
-MARTOR_IMGUR_API_KEY   = 'your-api-key'
+# Imgur API Key
+MARTOR_IMGUR_CLIENT_ID = os.getenv("IMGUR_CLIENT_ID")
+MARTOR_IMGUR_API_KEY = os.getenv("IMGUR_SECRET")
 
 # Markdownify
 MARTOR_MARKDOWNIFY_FUNCTION = 'martor.utils.markdownify' # default

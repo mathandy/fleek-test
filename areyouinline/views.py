@@ -53,3 +53,7 @@ def create_queue(request):
         existing_queue_names=[q.name for q in QueueMember.objects.all()]
     )
     return render(request, template_name="create_queue.html", context=context)
+
+
+def about(request):
+    return render(request, template_name="about.html")

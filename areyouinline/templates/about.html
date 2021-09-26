@@ -1,10 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% load static %}
 
-</body>
-</html>
+{% block content %}
+<h1>About AreYouInQueue</h1>
+
+<h3>Help:</h3>
+To access an existing queue, you must know its URL.
+<br/>
+To create a queue, click <a href="{% url 'create_queue' %}">here</a>.
+
+<h3>About AreYouInQueue:</h3>
+Developed by Andrew Port.
+<br/>
+<br/>
+<a href="https://www.paypal.com/donate?business=4SKJ27AM4EYYA&amp;no_recurring=0&amp;item_name=Support+the+creator+of+svgpathtools?++He%27s+a+student+and+would+appreciate+it.&amp;currency_code=USD">
+    <img src="{% static 'images/donate-button.svg' %}" alt="Click to donate."/>
+</a>
+{% endblock %}

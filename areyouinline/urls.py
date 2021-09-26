@@ -22,8 +22,8 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.create_queue, name='create_queue'),
+    path('create/', views.create_queue, name='create_queue'),
     path('queue/<str:queue_name>', views.queue, name='queue'),
-    path('about', views.queue, name='about'),
+    path('', views.about, name='about'),
     path('martor/', include('martor.urls')),
 ]
