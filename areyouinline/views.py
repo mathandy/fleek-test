@@ -12,7 +12,7 @@ def home(request):
     return render(request, template_name="home.html", context=context)
 
 
-def queue(request, queue_name):
+def show_queue(request, queue_name):
     # validate queue name
     try:
         _ = Queue.validate_name(queue_name)
@@ -20,7 +20,7 @@ def queue(request, queue_name):
         return page_not_found(request=request, exception=e.message)
 
     # find queue
-    queue = Queue.objects.filter(name=queue_name.lower())
+    queue = Queue.objects.filter(name=queue_name.lower()).first()
     if not queue:
         return page_not_found(
             request=request, exception=f"There is no queue named '{queue_name}'.")
@@ -28,26 +28,30 @@ def queue(request, queue_name):
     if request.method == "POST":
         form = QueueMemberForm(data=request.POST)
         if form.is_valid():
-            QueueMember(name=form.name, queue=queue).save()
+            QueueMember(name=form.cleaned_data.get('member_name'), queue=queue).save()
         return redirect(queue.url)
 
     # render queue page
     context = dict(
         queue=queue,
         form=QueueMemberForm(),
-        queueing=[m.name for m in QueueMember.objects.filter(queue=queue)],
+        members=list(QueueMember.objects.filter(queue=queue)),
     )
     return render(request, template_name="show_queue.html", context=context)
 
 
 def create_queue(request):
-    form = QueueCreationForm(data=request.GET)
+    initial = dict(max_members=100)
+    form = QueueCreationForm(data=request.GET, initial=initial)
     if request.method == "POST":
-        name = request.POST.get('name', [''])[0]
-        description = request.POST.get('description', [''])[0]
         form = QueueCreationForm(data=request.POST)
+        from IPython import embed; embed()  ### DEBUG
         if form.is_valid():
-            queue = Queue(name=form.name, description=form.discription, max_members=form.max_members)
+            queue = Queue(
+                name=form.cleaned_data.get('name').lower(),
+                description=form.cleaned_data.get('description'),
+                max_members=form.cleaned_data.get('max_members'),
+            )
             queue.save()
             return redirect(queue.url)
     context = dict(

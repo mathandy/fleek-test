@@ -1,5 +1,8 @@
 from django.db import models
 from django.core.validators import RegexValidator, MaxLengthValidator
+from django.utils.safestring import mark_safe
+from django.utils import timezone
+from markdown import markdown
 
 
 class Queue(models.Model):
@@ -42,7 +45,11 @@ class Queue(models.Model):
 
     @property
     def url(self):
-        return f'/queue/{self.name}'
+        return f'/q/{self.name}'
+
+    @property
+    def html_description(self):
+        return mark_safe(markdown(str(self.description)))
 
 
 class QueueMember(models.Model):
@@ -53,3 +60,7 @@ class QueueMember(models.Model):
     name = models.CharField(null=False, max_length=NAME_MAX_LENGTH)
     queue = models.ForeignKey(Queue, on_delete=models.CASCADE)
     join_datetime = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def wait_time(self):
+        return f'{int((timezone.now() - self.join_datetime).total_seconds() // 60)} minutes'

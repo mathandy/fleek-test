@@ -11,7 +11,12 @@
 {% block content %}
   <form class="ui form" method="post">{% csrf_token %}
     <div class="field">
-      {{ form.name }}
+        <label for="name">{{ form.name.label }}</label>
+        <input id="name" name="name" placeholder="{{ form.name.help_text }}" pattern="^[a-zA-Z0-9_]*$">
+    </div>
+    <div class="field">
+        <label for="max_members">{{ form.max_members.label }}</label>
+        <input id="max_members" name="max_members" placeholder="{{ form.max_members.help_text }}" type="number" min="0">
     </div>
     <div class="field">
       {{ form.description }}
