@@ -22,17 +22,13 @@
 
     <div class="ui segment">
         <form class="ui form" method="post">{% csrf_token %}
-
-            <label for="member_name">{{ form.member_name.label }}</label>
-            <input id="member_name" name="member_name" placeholder="{{ form.member_name.help_text }}" pattern="^[a-zA-Z0-9_]*$">
-
-            <button class="ui right floated positive button">
-                <i class="save icon"></i> Create
-            </button>
+            <label for="member_name">{{ form.member_name.label }}</label><br/>
+            <div class="ui action input">
+                <input id="member_name" name="member_name" placeholder="{{ form.member_name.help_text }}" pattern="^[a-zA-Z0-9_]*$">
+                <button class="ui button">Join Queue</button>
+            </div>
         </form>
-    </div>
 
-    <div class="ui segment">
         <ul>
             {% for member in members %}
                 <li>{{ member.name }} ({{ member.wait_time }})</li>

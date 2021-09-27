@@ -27,7 +27,7 @@ class QueueCreationForm(forms.Form):
 class QueueMemberForm(forms.Form):
     member_name = forms.CharField(
         label="Add a name to the queue:",
-        help_text="Enter a name for your new queue.",
+        help_text='Enter your name here and click "Join Queue" to join.',
         validators=[Queue._allowed_chars_validator],
         max_length=Queue.MEMBER_NAME_MAX_LENGTH,
     )
